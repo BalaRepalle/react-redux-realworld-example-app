@@ -33,7 +33,7 @@ const promiseMiddleware = store => next => action => {
         console.log('ERROR', error);
         action.error = true;
         // ✅ Safe access to response body
-        action.payload = error?.response?.body || error?.message || 'Unknown error occurred';
+        action.payload = (error && error.response && error.response.body) || error.message || 'Unknown error occurred';
         if (!action.skipTracking) {
           store.dispatch({ type: ASYNC_END, promise: action.payload });
         }
