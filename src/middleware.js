@@ -26,13 +26,14 @@ const promiseMiddleware = store => next => action => {
         store.dispatch(action);
       },
       error => {
-        const currentState = store.getState()
+        const currentState = store.getState();
         if (!skipTracking && currentState.viewChangeCounter !== currentView) {
-          return
+          return;
         }
         console.log('ERROR', error);
         action.error = true;
-        action.payload = error.response.body;
+        // ✅ Safe access to response body
+        action.payload = error?.response?.body || error?.message || 'Unknown error occurred';
         if (!action.skipTracking) {
           store.dispatch({ type: ASYNC_END, promise: action.payload });
         }
